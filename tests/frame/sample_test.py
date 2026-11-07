@@ -75,3 +75,23 @@ def test_sample_with_seed(constructor_eager: ConstructorEager) -> None:
 
     assert r1.equals(r2)  # type: ignore[attr-defined]
     assert not r1.equals(r3)  # type: ignore[attr-defined]
+
+
+def test_sample_draws_from_all_rows(constructor_eager: ConstructorEager) -> None:
+    size, n = 100, 10
+    df = nw.from_native(constructor_eager({"a": list(range(size))}), eager_only=True)
+
+    result = df.sample(n=n, seed=123)["a"].to_list()
+
+    assert max(result) >= n
+
+
+def test_sample_with_replacement_larger_than_population(
+    constructor_eager: ConstructorEager,
+) -> None:
+    df = nw.from_native(constructor_eager({"a": [1, 2, 3]}), eager_only=True)
+
+    result = df.sample(n=5, with_replacement=True, seed=123)["a"].to_list()
+
+    assert len(result) == 5
+    assert set(result) <= {1, 2, 3}

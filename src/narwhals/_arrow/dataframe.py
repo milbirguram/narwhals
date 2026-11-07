@@ -818,7 +818,7 @@ class ArrowDataFrame(
         import numpy as np  # ignore-banned-import
 
         rng = np.random.default_rng(seed=seed)
-        indices = rng.choice(np.arange(n), size=n, replace=with_replacement)
+        indices = rng.choice(np.arange(len(self)), size=n, replace=with_replacement)
         return self._with_native(
             self.native.take(pa.array(indices, type=pa.uint64())),
             validate_column_names=False,
